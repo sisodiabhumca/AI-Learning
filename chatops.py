@@ -6,31 +6,35 @@ import subprocess
 import os
 from terms import return_word
 from datetime import datetime
-# from p_words import TEAMS_ACCESS_TOKEN
+from slack_sdk import WebClient
+from slack_sdk.errors import SlackApiError
 
 # Retrieve the access token from the environment variable
-TEAMS_ACCESS_TOKEN = os.getenv("TEAMS_ACCESS_TOKEN")
+SLACK_BOT_TOKEN = os.getenv("SLACK_BOT_TOKEN")
+SLACK_CHANNEL_ID = os.getenv("SLACK_CHANNEL_ID")
 profile_id = os.getenv("PROFILE_ID")
 li_access_token = os.getenv("LI_ACCESS_TOKEN")
 
-if TEAMS_ACCESS_TOKEN:
-    print("Access token retrieved successfully")
+if SLACK_BOT_TOKEN:
+    print("Slack bot token retrieved successfully")
 else:
-    print("Failed to retrieve access token")
+    print("Failed to retrieve Slack bot token")
 
-# Simple Bot Function for passing messages to a room
-def send_it(token, room_id, message):
+# Initialize Slack client
+slack_client = WebClient(token=SLACK_BOT_TOKEN)
 
-    header = {"Authorization": "Bearer %s" % token, "Content-Type": "application/json"}
-
-    data = {"roomId": room_id, "text": message, "attachments": card}
-
-    return requests.post(
-        "https://api.ciscospark.com/v1/messages/",
-        headers=header,
-        data=json.dumps(data),
-        verify=True,
-    )
+# Slack Bot Function for passing messages to a channel
+def send_to_slack(channel_id, blocks, text=""):
+    try:
+        response = slack_client.chat_postMessage(
+            channel=channel_id,
+            text=text,
+            blocks=blocks
+        )
+        return response
+    except SlackApiError as e:
+        print(f"Error posting message: {e.response['error']}")
+        return None
 
 # post to LinkedIn
 # will change to https://api.linkedin.com/rest/posts
@@ -58,7 +62,7 @@ def post(profile_id, li_access_token, random_word_name, definition, word_url):
         "specificContent": {
             "com.linkedin.ugc.ShareContent": {
                 "shareCommentary": {
-                    "text": f"-------------\nAI Daily Dose\n-------------\n\n\n{random_word_name}\n\n\n{definition}\n\n\n#Tech #AIDailyDose #{random_word_linkedin} #AI #ArtificialIntelligence\n\nThis automated post was created using #Python and a LinkedIn #API. Feel free to share related resources and/or discuss this topic in the comments. Anyone can join the Webex space for the AI Daily Dose: https://eurl.io/#vPEHI7XF1"
+                    "text": f"-------------\nAI Daily Dose\n-------------\n\n\n{random_word_name}\n\n\n{definition}\n\n\n#Tech #AIDailyDose #{random_word_linkedin} #AI #ArtificialIntelligence\n\nThis automated post was created using #Python and a LinkedIn #API. Feel free to share related resources and/or discuss this topic in the comments. Anyone can join the Slack channel for the AI Daily Dose!"
                 },
                 "shareMediaCategory": "NONE",
             }
@@ -75,112 +79,78 @@ if __name__ == "__main__":
     # Command line arguments parsing
     from argparse import ArgumentParser
 
-    # AI Daily Dose Webex space
-    teams_room = (
-        "Y2lzY29zcGFyazovL3VzL1JPT00vNjRiNTY1NDAtNjU4NS0xMWVmLTk3ZDMtODFhYjdmM2ZkMGIz"
-    )
-    the_message = ""
+    # AI Daily Dose Slack channel
+    slack_channel = SLACK_CHANNEL_ID or "general"  # Default to general channel if not specified
+    
     # fetch random dictionary containing word as key and definition as value
     random_word = return_word()
     random_word_name = random_word["name"]
-    word = "\n" + random_word["name"] + "\n"
+    word = random_word["name"]
     word_url = random_word["url"]
     definition = random_word["definition"]
-    wiki_link_text = f"Click to Learn about '{random_word_name}'"
+    wiki_link_text = f"Learn about '{random_word_name}'"
 
-    card = [
+    # Create Slack blocks for rich message formatting
+    slack_blocks = [
         {
-            "contentType": "application/vnd.microsoft.card.adaptive",
-            "content": {
-                "type": "AdaptiveCard",
-                "version": "1.2",
-                "body": [
-                    # {
-                    #     "type": "Image",
-                    #     "url": "https://raw.githubusercontent.com/xanderstevenson/word-of-the-day/main/media/AI-WOTD.png",  # Replace with your image URL
-                    #     "horizontalAlignment": "center",
-                    #     "width": "100px",
-                    #     "height": "auto",
-                    # },
-                    {
-                        "type": "TextBlock",
-                        "text": "AI Daily Dose",
-                        "size": "ExtraLarge",
-                        "horizontalAlignment": "center",
-                        "fontType": "Default",
-                        "color": "Warning",
-                        "weight": "Bold",
-                        "wrap": True,
-                        "style": "Emphasis",
+            "type": "header",
+            "text": {
+                "type": "plain_text",
+                "text": "🤖 AI Daily Dose",
+                "emoji": True
+            }
+        },
+        {
+            "type": "divider"
+        },
+        {
+            "type": "section",
+            "text": {
+                "type": "mrkdwn",
+                "text": f"*{word}*"
+            }
+        },
+        {
+            "type": "section",
+            "text": {
+                "type": "mrkdwn",
+                "text": definition
+            }
+        },
+        {
+            "type": "section",
+            "text": {
+                "type": "mrkdwn",
+                "text": "Reply below and let's discuss this AI concept! 💬"
+            }
+        },
+        {
+            "type": "actions",
+            "elements": [
+                {
+                    "type": "button",
+                    "text": {
+                        "type": "plain_text",
+                        "text": wiki_link_text,
+                        "emoji": True
                     },
-                    {
-                        "type": "TextBlock",
-                        "text": word,
-                        "size": "ExtraLarge",
-                        "separator": True,
-                        "horizontalAlignment": "center",
-                        "fontType": "Default",
-                        "isSubtle": True,
-                        "color": "Good",
-                        "weight": "Bolder",
-                        "wrap": True,
-                    },
-                    {
-                        "type": "TextBlock",
-                        "text": definition,
-                        "size": "Medium",
-                        "horizontalAlignment": "center",
-                        "fontType": "Default",
-                        "isSubtle": True,
-                        "wrap": True,
-                    },
-                    {
-                        "type": "ActionSet",
-                        "horizontalAlignment": "center",
-                        "actions": [
-                            {
-                                "type": "Action.OpenUrl",
-                                "url": word_url,
-                                "title": wiki_link_text,
-                                "style": "positive",
-                                "horizontalAlignment": "center",
-                            }
-                        ],
-                    },
-                    {
-                        "type": "TextBlock",
-                        "text": "Reply below and let's discuss this AI concept!",
-                        "size": "Small",
-                        "horizontalAlignment": "center",
-                        "fontType": "Default",
-                        "isSubtle": True,
-                        "wrap": True,
-                        "color": "Warning",
-                    },
-                ],
-            },
+                    "url": word_url,
+                    "style": "primary"
+                }
+            ]
         }
     ]
 
-    # Now let's post our message to Webex Teams
-    res = send_it(TEAMS_ACCESS_TOKEN, teams_room, the_message)
-    if res.status_code == 200:
-        print(f"{word} was successfully posted to Webex Teams on {datetime.now()}")
-
+    # Now let's post our message to Slack
+    res = send_to_slack(slack_channel, slack_blocks, f"AI Daily Dose: {word}")
+    if res and res["ok"]:
+        print(f"{word} was successfully posted to Slack on {datetime.now()}")
     else:
-        print("Failed with status code: %d" % res.status_code)
-        if res.status_code == 404:
-            print(
-                "Please check that the bot is in the room you're attempting to post to..."
-            )
-        elif res.status_code == 400:
-            print(
-                "Please check the identifier of the room you're attempting to post to..."
-            )
-        elif res.status_code == 401:
-            print("Please check if the access token is correct...")
+        print("Failed to post to Slack")
+        if res:
+            print(f"Error: {res.get('error', 'Unknown error')}")
 
- # post to linkedin
+    # post to linkedin
     res2 = post(profile_id, li_access_token, random_word_name, definition, word_url)
     if res2.status_code == 201:
         print(f"{word} was successfully posted to LinkedIn")
