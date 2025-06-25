@@ -51,11 +51,9 @@ def post(profile_id, li_access_token, random_word_name, definition, word_url):
     random_word_linkedin = random_word_name.lower().replace(" ", "")
     # remove abbreviations for linkedin hashtag
     # remove everything between ()
-    random_word_linkedin = re.sub("\(.*?\)", "()", random_word_linkedin)
-    # remove (), -.  and /
-    random_word_linkedin = random_word_linkedin.replace("(", "").replace(")", "")
-    random_word_linkedin = random_word_linkedin.replace("-", "").replace("/", "")
-    random_word_linkedin = random_word_linkedin.replace(".", "")
+    random_word_linkedin = re.sub(r"\(.*?\)", "", random_word_linkedin)
+    # remove remaining parentheses, hyphens, slashes, and dots
+    random_word_linkedin = re.sub(r'[().\-/\.]', '', random_word_linkedin)
     post_data = {
         "author": "urn:li:person:" + profile_id,
         "lifecycleState": "PUBLISHED",
