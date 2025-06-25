@@ -121,7 +121,7 @@ if __name__ == "__main__":
             "type": "section",
             "text": {
                 "type": "mrkdwn",
-                "text": "Reply below and let's discuss this AI concept! 💬"
+                "text": "Let's learn this AI concept! 💬"
             }
         },
         {
