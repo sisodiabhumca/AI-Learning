@@ -1,0 +1,49 @@
+Traceback (most recent call last):
+  File "chatops.py", line 7, in <module>
+    from requests_oauthlib import OAuth1Session
+ModuleNotFoundError: No module named 'requests_oauthlib'
+Traceback (most recent call last):
+  File "/Users/alexstev/Documents/CiscoDevNet/code/ai-wotd/post_to_twitter.py", line 110, in <module>
+    post_tweet()
+  File "/Users/alexstev/Documents/CiscoDevNet/code/ai-wotd/post_to_twitter.py", line 98, in post_tweet
+    raise Exception(
+Exception: Request returned an error: 403 {"detail":"You are not permitted to perform this action.","type":"about:blank","title":"Forbidden","status":403}
+
+Loss Function
+ was successfully posted to Webex Teams on 2024-09-02 12:26:56.978046
+Traceback (most recent call last):
+  File "/Users/alexstev/Documents/CiscoDevNet/code/ai-wotd/post_to_twitter.py", line 110, in <module>
+    post_tweet()
+  File "/Users/alexstev/Documents/CiscoDevNet/code/ai-wotd/post_to_twitter.py", line 98, in post_tweet
+    raise Exception(
+Exception: Request returned an error: 403 {"detail":"You are not permitted to perform this action.","type":"about:blank","title":"Forbidden","status":403}
+
+Hyperparameter Tuning
+ was successfully posted to Webex Teams on 2024-09-03 09:00:04.112318
+
+Random Forest
+ was successfully posted to Webex Teams on 2024-09-04 09:00:02.192739
+
+Supervised Learning
+ was successfully posted to Webex Teams on 2024-09-05 09:00:05.902735
+
+Indirect normativity
+ was successfully posted to Webex Teams on 2024-09-06 09:00:02.696626
+
+Hyperparameter optimization
+ was successfully posted to Webex Teams on 2024-09-09 09:00:01.764579
+
+Clustering
+ was successfully posted to Webex Teams on 2024-09-10 09:00:05.513769
+
+Unsupervised Learning
+ was successfully posted to Webex Teams on 2024-09-11 09:00:02.578140
+
+AI alignment
+ was successfully posted to Webex Teams on 2024-09-12 09:00:02.018774
+
+Seed AI
+ was successfully posted to Webex Teams on 2024-09-13 09:00:05.213240
+
+Superintelligence
+ was successfully posted to Webex Teams on 2024-09-14 09:00:01.880742
