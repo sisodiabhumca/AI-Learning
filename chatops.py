@@ -4,14 +4,10 @@ import re
 import time
 import subprocess
 import os
-from dotenv import load_dotenv
 from terms import return_word
 from datetime import datetime
 from slack_sdk import WebClient
 from slack_sdk.errors import SlackApiError
-
-# Load environment variables from .env file
-load_dotenv()
 
 # Retrieve the access token from the environment variable
 SLACK_BOT_TOKEN = os.getenv("SLACK_BOT_TOKEN")
@@ -80,7 +76,7 @@ if __name__ == "__main__":
     # Check if required Slack credentials are set
     if not SLACK_BOT_TOKEN or not SLACK_CHANNEL_ID:
         print("Error: Slack credentials not properly configured")
-        print("Please check your .env file and ensure SLACK_BOT_TOKEN and SLACK_CHANNEL_ID are set")
+        print("Please set SLACK_BOT_TOKEN and SLACK_CHANNEL_ID as GitHub Secrets")
         exit(1)
 
     # Check if LinkedIn credentials are set
