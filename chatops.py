@@ -25,8 +25,10 @@ def debug_env_vars():
 debug_env_vars()
 
 # Retrieve the access token from the environment variable
-SLACK_BOT_TOKEN = os.getenv("SLACK_BOT_TOKEN")
-SLACK_CHANNEL_ID = os.getenv("SLACK_CHANNEL_ID")
+# SLACK_BOT_TOKEN = os.getenv("SLACK_BOT_TOKEN")
+# SLACK_CHANNEL_ID = os.getenv("SLACK_CHANNEL_ID")
+SLACK_BOT_TOKEN=xoxb-4341754681251-9097444536725-HSEjiWcOXtRkBMQlXkQhIg7E
+SLACK_CHANNEL_ID=D092X4B21QA
 profile_id = os.getenv("PROFILE_ID")
 li_access_token = os.getenv("LI_ACCESS_TOKEN")
 
