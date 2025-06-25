@@ -25,4 +25,11 @@ jobs:
 
       - name: Run daily script
         run: |
-          python your_main_script.py
+          python test/test_workflow.py
+
+      - name: Notify Slack
+        uses: slackapi/slack-github-action@v1.25.0
+        with:
+          channel: '#test-channel'
+          text: 'Test workflow completed successfully!'
+          token: ${{ secrets.SLACK_WEBHOOK_URL }}
