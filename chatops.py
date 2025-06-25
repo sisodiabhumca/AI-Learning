@@ -15,6 +15,12 @@ SLACK_CHANNEL_ID = os.getenv("SLACK_CHANNEL_ID")
 profile_id = os.getenv("PROFILE_ID")
 li_access_token = os.getenv("LI_ACCESS_TOKEN")
 
+# Debug output for troubleshooting
+print(f"SLACK_BOT_TOKEN is set: {bool(SLACK_BOT_TOKEN)}")
+print(f"SLACK_CHANNEL_ID is set: {bool(SLACK_CHANNEL_ID)}")
+print(f"LI_ACCESS_TOKEN is set: {bool(li_access_token)}")
+print(f"PROFILE_ID is set: {bool(profile_id)}")
+
 if SLACK_BOT_TOKEN:
     print("Slack bot token retrieved successfully")
 else:
