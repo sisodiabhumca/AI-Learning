@@ -28,6 +28,15 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
+      - name: Verify secrets
+        run: |
+          echo "=== Secrets Verification ==="
+          echo "SLACK_BOT_TOKEN: ${SLACK_BOT_TOKEN:+Set} ${SLACK_BOT_TOKEN:-Not Set}"
+          echo "SLACK_CHANNEL_ID: ${SLACK_CHANNEL_ID:+Set} ${SLACK_CHANNEL_ID:-Not Set}"
+          echo "LI_ACCESS_TOKEN: ${LI_ACCESS_TOKEN:+Set} ${LI_ACCESS_TOKEN:-Not Set}"
+          echo "PROFILE_ID: ${PROFILE_ID:+Set} ${PROFILE_ID:-Not Set}"
+          echo "=== End of Secrets Verification ==="
+
       - name: Debug environment
         run: |
           echo "Python version: $(python3 --version)"
