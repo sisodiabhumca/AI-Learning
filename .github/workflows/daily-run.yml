@@ -1,6 +1,9 @@
 name: Daily Run at 8 AM PT
 
 on:
+  push:
+    branches:
+      - main
   schedule:
     - cron: '0 15 * * *'  # 8 AM PT is 3 PM UTC
 
