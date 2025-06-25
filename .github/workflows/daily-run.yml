@@ -1,0 +1,25 @@
+name: Daily Run at 8 AM PT
+
+on:
+  schedule:
+    - cron: '0 15 * * *'  # 8 AM PT is 3 PM UTC
+
+jobs:
+  run-daily:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+
+      - name: Run daily script
+        run: |
+          python your_main_script.py
