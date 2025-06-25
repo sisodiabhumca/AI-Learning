@@ -8,6 +8,11 @@ on:
 jobs:
   run-chatops:
     runs-on: ubuntu-latest
+    env:
+      SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+      SLACK_CHANNEL_ID: ${{ secrets.SLACK_CHANNEL_ID }}
+      LI_ACCESS_TOKEN: ${{ secrets.LI_ACCESS_TOKEN }}
+      PROFILE_ID: ${{ secrets.PROFILE_ID }}
     
     steps:
       - name: Checkout code
@@ -29,16 +34,6 @@ jobs:
           echo "Python executable: $(which python3)"
           echo "Environment variables:"
           env | sort
-        env:
-          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
-          SLACK_CHANNEL_ID: ${{ secrets.SLACK_CHANNEL_ID }}
-          LI_ACCESS_TOKEN: ${{ secrets.LI_ACCESS_TOKEN }}
-          PROFILE_ID: ${{ secrets.PROFILE_ID }}
 
       - name: Run Chatops
         run: python3 chatops.py
-        env:
-          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
-          SLACK_CHANNEL_ID: ${{ secrets.SLACK_CHANNEL_ID }}
-          LI_ACCESS_TOKEN: ${{ secrets.LI_ACCESS_TOKEN }}
-          PROFILE_ID: ${{ secrets.PROFILE_ID }}
