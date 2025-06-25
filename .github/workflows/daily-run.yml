@@ -25,7 +25,7 @@ jobs:
 
       - name: Run daily script
         run: |
-          python test/test_workflow.py
+          python test/test_chatops.py
 
       - name: Notify Slack
         uses: slackapi/slack-github-action@v1.25.0
