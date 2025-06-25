@@ -8,12 +8,65 @@ from terms import return_word
 from datetime import datetime
 from slack_sdk import WebClient
 from slack_sdk.errors import SlackApiError
+import sys
+
+# Debug function to print environment variables safely
+def debug_env_vars():
+    print("\n=== Environment Variables Debug ===")
+    print(f"Python version: {sys.version}")
+    print(f"Current working directory: {os.getcwd()}")
+    print(f"Available environment variables:")
+    for key in sorted(os.environ):
+        if key.startswith("SLACK") or key.startswith("LI") or key == "PROFILE_ID":
+            print(f"{key}: {bool(os.environ.get(key))}")
+    print("=== End of Debug ===\n")
+
+# Call debug function immediately
+debug_env_vars()
 
 # Retrieve the access token from the environment variable
 SLACK_BOT_TOKEN = os.getenv("SLACK_BOT_TOKEN")
 SLACK_CHANNEL_ID = os.getenv("SLACK_CHANNEL_ID")
 profile_id = os.getenv("PROFILE_ID")
 li_access_token = os.getenv("LI_ACCESS_TOKEN")
+
+# Debug output for troubleshooting
+print("\n=== Environment Variable Debug ===")
+print(f"SLACK_BOT_TOKEN: {'Set' if SLACK_BOT_TOKEN else 'Not Set'}")
+print(f"SLACK_CHANNEL_ID: {'Set' if SLACK_CHANNEL_ID else 'Not Set'}")
+print(f"LI_ACCESS_TOKEN: {'Set' if li_access_token else 'Not Set'}")
+print(f"PROFILE_ID: {'Set' if profile_id else 'Not Set'}")
+
+# Print environment variable values (without exposing secrets)
+if SLACK_BOT_TOKEN:
+    print(f"SLACK_BOT_TOKEN length: {len(SLACK_BOT_TOKEN)}")
+if SLACK_CHANNEL_ID:
+    print(f"SLACK_CHANNEL_ID length: {len(SLACK_CHANNEL_ID)}")
+
+print("\n=== Environment Variables ===")
+for key in sorted(os.environ):
+    if key.startswith("SLACK") or key.startswith("LI") or key == "PROFILE_ID":
+        value = os.environ[key]
+        print(f"{key}: {'Set' if value else 'Not Set'}")
+        if value:
+            print(f"{key} length: {len(value)}")
+print("=== End of Debug ===\n")
+
+# Check if required Slack credentials are set
+if not SLACK_BOT_TOKEN or not SLACK_CHANNEL_ID:
+    print("Error: Slack credentials not properly configured")
+    print("Please set SLACK_BOT_TOKEN and SLACK_CHANNEL_ID as GitHub Secrets")
+    exit(1)
+
+# Debug output for troubleshooting
+print(f"\n=== Credential Debug ===")
+print(f"SLACK_BOT_TOKEN is set: {bool(SLACK_BOT_TOKEN)}")
+print(f"SLACK_CHANNEL_ID is set: {bool(SLACK_CHANNEL_ID)}")
+print(f"LI_ACCESS_TOKEN is set: {bool(li_access_token)}")
+print(f"PROFILE_ID is set: {bool(profile_id)}")
+print(f"SLACK_BOT_TOKEN length: {len(SLACK_BOT_TOKEN) if SLACK_BOT_TOKEN else 0}")
+print(f"SLACK_CHANNEL_ID length: {len(SLACK_CHANNEL_ID) if SLACK_CHANNEL_ID else 0}")
+print("=== End of Credential Debug ===\n")
 
 # Debug output for troubleshooting
 print(f"SLACK_BOT_TOKEN is set: {bool(SLACK_BOT_TOKEN)}")
