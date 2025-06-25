@@ -4,10 +4,14 @@ import re
 import time
 import subprocess
 import os
+from dotenv import load_dotenv
 from terms import return_word
 from datetime import datetime
 from slack_sdk import WebClient
 from slack_sdk.errors import SlackApiError
+
+# Load environment variables from .env file
+load_dotenv()
 
 # Retrieve the access token from the environment variable
 SLACK_BOT_TOKEN = os.getenv("SLACK_BOT_TOKEN")
@@ -73,84 +77,99 @@ def post(profile_id, li_access_token, random_word_name, definition, word_url):
 
 
 if __name__ == "__main__":
+    # Check if required Slack credentials are set
+    if not SLACK_BOT_TOKEN or not SLACK_CHANNEL_ID:
+        print("Error: Slack credentials not properly configured")
+        print("Please check your .env file and ensure SLACK_BOT_TOKEN and SLACK_CHANNEL_ID are set")
+        exit(1)
 
-    # Command line arguments parsing
-    from argparse import ArgumentParser
-
-    # AI Daily Dose Slack channel
-    slack_channel = SLACK_CHANNEL_ID or "general"  # Default to general channel if not specified
+    # Check if LinkedIn credentials are set
+    has_linkedin_credentials = bool(profile_id and li_access_token)
     
-    # fetch random dictionary containing word as key and definition as value
-    random_word = return_word()
-    random_word_name = random_word["name"]
-    word = random_word["name"]
-    word_url = random_word["url"]
-    definition = random_word["definition"]
-    wiki_link_text = f"Learn about '{random_word_name}'"
+    try:
+        # fetch random dictionary containing word as key and definition as value
+        random_word = return_word()
+        random_word_name = random_word["name"]
+        word = random_word["name"]
+        word_url = random_word["url"]
+        definition = random_word["definition"]
+        wiki_link_text = f"Learn about '{random_word_name}'"
 
-    # Create Slack blocks for rich message formatting
-    slack_blocks = [
-        {
-            "type": "header",
-            "text": {
-                "type": "plain_text",
-                "text": "🤖 AI Daily Dose",
-                "emoji": True
-            }
-        },
-        {
-            "type": "divider"
-        },
-        {
-            "type": "section",
-            "text": {
-                "type": "mrkdwn",
-                "text": f"*{word}*"
-            }
-        },
-        {
-            "type": "section",
-            "text": {
-                "type": "mrkdwn",
-                "text": definition
-            }
-        },
-        {
-            "type": "section",
-            "text": {
-                "type": "mrkdwn",
-                "text": "Let's learn this AI concept! 💬"
-            }
-        },
-        {
-            "type": "actions",
-            "elements": [
-                {
-                    "type": "button",
-                    "text": {
-                        "type": "plain_text",
-                        "text": wiki_link_text,
-                        "emoji": True
-                    },
-                    "url": word_url,
-                    "style": "primary"
+        # Create Slack blocks for rich message formatting
+        slack_blocks = [
+            {
+                "type": "header",
+                "text": {
+                    "type": "plain_text",
+                    "text": "🤖 AI Daily Dose",
+                    "emoji": True
                 }
-            ]
-        }
-    ]
+            },
+            {
+                "type": "divider"
+            },
+            {
+                "type": "section",
+                "text": {
+                    "type": "mrkdwn",
+                    "text": f"*{word}*"
+                }
+            },
+            {
+                "type": "section",
+                "text": {
+                    "type": "mrkdwn",
+                    "text": definition
+                }
+            },
+            {
+                "type": "section",
+                "text": {
+                    "type": "mrkdwn",
+                    "text": "Reply below and let's discuss this AI concept! 💬"
+                }
+            },
+            {
+                "type": "actions",
+                "elements": [
+                    {
+                        "type": "button",
+                        "text": {
+                            "type": "plain_text",
+                            "text": wiki_link_text,
+                            "emoji": True
+                        },
+                        "url": word_url,
+                        "style": "primary"
+                    }
+                ]
+            }
+        ]
 
-    # Now let's post our message to Slack
-    res = send_to_slack(slack_channel, slack_blocks, f"AI Daily Dose: {word}")
-    if res and res["ok"]:
-        print(f"{word} was successfully posted to Slack on {datetime.now()}")
-    else:
-        print("Failed to post to Slack")
-        if res:
-            print(f"Error: {res.get('error', 'Unknown error')}")
+        # Post to Slack
+        res = send_to_slack(SLACK_CHANNEL_ID, slack_blocks, f"AI Daily Dose: {word}")
+        if res and res["ok"]:
+            print(f"{word} was successfully posted to Slack on {datetime.now()}")
+        else:
+            print("Failed to post to Slack")
+            if res:
+                print(f"Error: {res.get('error', 'Unknown error')}")
+            exit(1)
 
-    # post to linkedin
-    res2 = post(profile_id, li_access_token, random_word_name, definition, word_url)
-    if res2.status_code == 201:
-        print(f"{word} was successfully posted to LinkedIn")
-    else:
-        print("failed with statusCode: %d" % res2.status_code)
+        # Post to LinkedIn if credentials are available
+        if has_linkedin_credentials:
+            print("Attempting to post to LinkedIn...")
+            try:
+                res2 = post(profile_id, li_access_token, random_word_name, definition, word_url)
+                if res2.status_code == 201:
+                    print(f"{word} was successfully posted to LinkedIn")
+                else:
+                    print(f"Failed to post to LinkedIn with status code: {res2.status_code}")
+            except Exception as e:
+                print(f"Error posting to LinkedIn: {str(e)}")
+        else:
+            print("LinkedIn credentials not configured - skipping LinkedIn post")
+
+    except Exception as e:
+        print(f"An error occurred: {str(e)}")
+        exit(1)
