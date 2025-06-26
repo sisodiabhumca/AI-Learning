@@ -119,7 +119,7 @@ def post(profile_id, li_access_token, random_word_name, definition, word_url):
         "specificContent": {
             "com.linkedin.ugc.ShareContent": {
                 "shareCommentary": {
-                    "text": f"-------------\nAI Daily Dose\n-------------\n\n\n{random_word_name}\n\n\n{definition}\n\n\n#Tech #AIDailyDose #{random_word_linkedin} #AI #ArtificialIntelligence\n\nThis automated post was created using #Python and a LinkedIn #API. Feel free to share related resources and/or discuss this topic in the comments. Anyone can join the Slack channel for the AI Daily Dose!"
+                    "text": f"-------------\nAI Daily Dose\n-------------\n\n\n{random_word_name}\n\n\n{definition}\n\n\n#Tech #AIDailyDose #{random_word_linkedin} #AI #ArtificialIntelligence\n\nThis automated post was created using #Python and a LinkedIn #API. Feel free to share related resources. Anyone can join the Slack Bot for the AI Daily Dose!"
                 },
                 "shareMediaCategory": "NONE",
             }
@@ -181,7 +181,7 @@ if __name__ == "__main__":
                 "type": "section",
                 "text": {
                     "type": "mrkdwn",
-                    "text": "Reply below and let's discuss this AI concept! 💬"
+                    "text": "Let's learn this AI concept! 💬"
                 }
             },
             {
